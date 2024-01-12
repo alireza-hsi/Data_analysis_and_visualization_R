@@ -1,0 +1,259 @@
+---
+title: "assignment 1"
+output:
+  pdf_document: default
+  word_document: default
+  html_document: default
+date: "2023-10-04"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Fundamentals of Applied Data Science
+## Assignment 1 part 1 
+
+**1-** Data quality can be assessed in terms of several qualities (e.g., accuracy). Enumerate some of these qualities and discuss how the assessment of data quality can depend on the intended use of the data, giving examples. 
+
+There are different factors to consider as data qualities, including -but not limited to- accuracy, completeness, consistency, timeliness, believability, and interpretability [9]. There are other qualities as well to be assessed by database users, such as accessibility, depending on their intended use. Intended use of data plays a major role to define a quality vital to a database. For instance, accessibility might not be a concern for a marketing or sales executive. However, it might be very important to customer service department since they need to provide on time service for the customers and therefore, they need to find the relevant data as fast as possible. In another scenario, someone from the sales department might consider completeness of data an important quality, while a marketing manager might not be interested in all the acquired data and is more interested in a safe number of addresses or phone numbers to run a successful marketing campaign.
+
+**2-** In real-world data, tuples with missing values for some attributes are a common occurrence. Describe various methods for handling this problem. 
+According to [9], there are 6 main methods to handle missing values in tuples in a database. The methods include the followings:
+a-	Ignoring the tuple:
+Although this method is not very useful, it can be done when the tuple with missing value is in an attribute with lower level of importance or the tuple contains several missing values in different attributes. 
+b-	Filling in the missing value manually:
+This method is not suggested or even feasible in large datasets.
+c-	Using a global constant to fill in the missing value:
+This is to address the missing value as “Unknown” or a similar value. This method is easy to apply, however, it might mislead data mining process to mistakenly take the repeated “Unknown” value as an interesting value to investigate.
+d-	Using a measure of central tendency for the attribute (e.g., the mean or median) to fill in the missing value:
+In symmetric data distributions one should use the mean, whereas, in skewed data distribution median should be used.
+e-	Using the attribute mean or median for all samples belonging to the same class as the given tuple:
+This method is useful when there is a classification in tuples. For instance, if we are classifying customers in different credit-risk classes, we can use the mean or median of each class to fill in the missing value for the tuples of the same class.
+f-	Using the most probable value to fill in the missing value:
+Here we can develop decision trees to closely predict the missing value using different tools.
+
+
+It is important to predict missing values where applicable and take action to minimize the effort for filling the missing value. For example, in [9], it is discussed that the drivers license number might not be applicable for those who do not have one. Therefore, it is better to prevent facing missing values by simply providing users an option such as N/A when designing a questionnaire. 
+**3-** Suppose that the data for analysis includes the attribute age. The age values for the data tuples are (in increasing order) 13, 15, 16, 16, 19, 20, 20, 21, 22, 22, 25, 25, 25, 25, 30, 33, 33, 35, 35, 35, 35, 36, 40, 45, 46, 52, 70. 
+(a)	What is the mean of the data?
+ 29.962963
+ What is the median? 
+        25
+(b)	What is the mode of the data?
+ 25 & 35
+Comment on the data’s modality (i.e., bimodal, trimodal, etc.). 
+The data is bimodal.
+(c)	What is the midrange of the data? 
+41.5
+(d)	Can you find (roughly) the first quartile (Q1) and the third quartile (Q3) of the data?
+Q1 = 20, Q3 = 35
+(e)	Give the five-number summary of the data.
+13, 20, 25, 35, 70
+
+
+(f) Boxplot of the data:
+```{r fig.dim = c(8, 5)}
+t <- c(13,15,16,16,19,20,20,21,22,22,25,25,25,25,30,33,33,35,35,35,35,36,40,45,46,52,70)
+boxplot(t)
+```
+(g)	How is a quantile-quantile plot different from a quantile plot?
+A quantile plot provides a visualized insight to understand different concepts of an attribute very easily. It gives the viewer the range of the data in addition to some information such as the median and different quartiles (specifically the first and the third quartile). It serves the viewer with its y-axis to be the range of data and its x-axis to be the percentile position of the data. For instance, by looking at the median we can understand that approximately 50 percent of the data locate below the value of the median. Accordingly, Q1 represents 25 percentile and Q3 represents 75 percentile of the data.[9]
+
+A quantile-quantile plot, or q-q plot, however, visualizes the distribution of values in two different samples. We can think of sales prices at two branches of a store or company as an example. The q-q plot graphs the quantile plot of two different distributions to make comparing the data easier in a visualized manner. Like quantile plot, it provides the information such as Q1, median, and Q3 as well as the range of values, but this time in two distributions. In this case the Y-axis shows the values of one distribution (one branch in the above example) and the X-axis shows the other distribution (the other branch in the example). [9]
+
+End of part 1
+
+## Assignment 1 part 2
+
+**1-** This dataset contains detailed information about insurance customers, including their age, sex, body mass index (BMI), number of children, smoking status and region. According to the author, this dataset was based on an old dataset that they altered for the purpose of using it in data science classes. It is a Comma Separated Value file.  By understanding the patterns in this data set we can gain useful insight into how age, gender and lifestyle choices can affect a person's insurance premiums. Dataset source: https://data.world/bob-wakefield.
+
+**2-** First, I used the "read.csv()" function to read my data into R and assigned it to "data.df" data frame. Then, I renamed the "Sex" column to "Gender" in order to clean my data frame using the following command: colnames(data.df)[3]<-"Gender"
+
+```{r fig.dim = c(8, 5)}
+data.df<-read.csv("DTI/Semester 1/Fundamentals of Applied Data Science/assignment 1/insurance.csv")
+head(data.df)
+colnames(data.df)[3]<-"Gender"
+head(data.df)
+```
+**3-** The data frame consists of 8 columns and 1338 rows. Columns names and meanings are as follow: "Index" for indexing observations, "Age" indicates the age of each observation, "Gender" is their sex, "BMI" shows their Body Mass Index, "Children" indicates the number of children the corresponding observation have, "Smoker" is a Boolean indicator which is True for smokers and False for non-smokers, "Region" shows the region that observation is in, and "Charges" is the amount each individual charges for this insurance. Each row measures the previously mentioned items for each individual.
+
+**4-** The column I selected for this part are "age", "bmi", and "charges". Results are as follow:
+Age: 1- Min = 18          | 2- Max = 64        | 3- Mean = 39.20703 | 4- Number of missing values = 0
+BMI: 1- Min = 15.96    | 2- Max = 53.13  | 3- Mean = 30.6634    | 4- Number of missing values = 0
+Charges: 1- Min = 1121.874    | 2- Max = 63770.43  |   3- Mean = 13270.42   | 4- Number of missing values = 0
+
+```{r}
+agecolsumm<- summary(data.df[,"age"])
+bmicolsumm<- summary(data.df[,"bmi"])
+chargescolsumm<- summary(data.df[,"charges"])
+print(agecolsumm)
+print(bmicolsumm)
+print(chargescolsumm)
+```
+**5-** I plotted a histogram from the BMI column to see how is the body mass index of individuals distributed in order to check its correlation to the respective insurance charges (histogram follows). For the non-statistical geom, I plotted a scatterplot to see if there is a correlation between age and insurance charges. In the fisrt chart I used histogram to demonstrate the distribution of BMI in the data -Principle 3- and used color to better visualize this -Principle 4-. Regarding second chart, I used scatterplot to effectively illustrate the correlation of age and charges in this data -Principle 3- and used color to better visualize this and to realize that smokers charge more -Principle 4-. Moreover, I used ggplot2 and hrbrthemes libraries to create charts.
+
+```{r fig.dim = c(8, 5)}
+library("ggplot2")
+library(hrbrthemes)
+ggplot(data.df ,aes(x=bmi)) +
+  geom_histogram( binwidth=3, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("BMI histigram with bin size = 3") +
+  theme_ipsum() +
+  theme(
+    plot.title = element_text(size=15)
+  )
+ggplot(data.df, aes(x=age, y=charges, color=smoker)) + 
+  geom_point(size=2) +
+  ggtitle("Age vs charges") +
+  theme_ipsum()
+
+```
+
+
+**6-** I did not have any missing values. Thus, I generated some missing values and used a while loop and is.na function to count them. As can be seen, data has 2 missing values in gender column and 4 in the charges column.
+
+
+```{r}
+data.df[3,8]<-NA
+data.df[100,8]<-NA
+data.df[200,8]<-NA
+data.df[300,8]<-NA
+data.df[4,3]<-NA
+data.df[100,3]<-NA
+i<-1
+while (i<9) {
+  print(sum(is.na(data.df[,i])))
+  i<-i+1
+}
+```
+**7-** We have missing values in charges column which is a numeric column. Thus, I replace the missing values in charges column with the mean of it. On the other hand, "sex" column also has missing valuse and as it is a categorical value, I replace it with the most frequent category. charges column mean is 13270 and most of the observations are male (674).
+
+```{r}
+library(plyr)
+count(data.df,'Gender')
+data.df$charges[is.na(data.df$charges)] <- 13270
+head(data.df)
+data.df$Gender[is.na(data.df$Gender)] <- "male"
+head(data.df)
+```
+**8-** In this stage, I normalized the bmi column using the z-score standardization.
+
+```{r}
+data.df$bmi <- (data.df$bmi - mean(data.df$bmi)) / sd(data.df$bmi)
+head(data.df)
+
+```
+
+**9-** In this section I converted the region column to dummy columns using the fastDummies package.
+
+```{r}
+library(fastDummies)
+data.df<-dummy_cols(data.df,select_columns = 'region')
+head(data.df)
+```
+
+**10-** First, the region column should be removed due to its redundancy.
+
+```{r}
+data.df <- subset(data.df, select = -region)
+head(data.df)
+```
+
+Second, as can be seen in the BMI histogram above, there are some outliers with BMI over 50. By removing these outliers the accuracy will increase. Thus, I remove the data in which bmi is more than 50. In this case, as we have normalized the BMI column, I remove BMI more than 3.3.
+
+```{r fig.dim = c(8, 5)}
+data.df<-subset(data.df, bmi<=3.3)
+ggplot(data.df ,aes(x=bmi)) +
+  geom_histogram( binwidth=0.4, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("BMI histigram with bin size = 0.4") +
+  theme_ipsum() +
+  theme(
+    plot.title = element_text(size=15)
+  )
+```
+
+Third, for discretization of the charges column data, an equal-depth binning has been created.
+
+```{r fig.dim = c(8, 5)}
+library(classInt)
+pal1 <- c("wheat1", "red3")
+w<-classIntervals(data.df$charges, n=6, style="quantile")
+plot(w, pal=pal1, main="Quantile")
+w
+
+```
+**11-** To fulfil this part, I used equal-width binning for the charges column.
+
+```{r fig.dim = c(8, 5)}
+ggplot(data.df ,aes(x=charges)) +
+  geom_histogram( binwidth=2000, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  ggtitle("charges histigram with bin size = 2000") +
+  theme_ipsum() +
+  theme(
+    plot.title = element_text(size=15)
+  )
+```
+
+**12-** scatter plot matrix has been generated for age, bmi, children and charges columns using pairs() function.
+
+```{r fig.dim = c(8, 5)}
+
+pairs(data.df[,c(2,4,5,7)])
+```
+
+**13-** First, I plotted a scatter plot to find if there is a correlation between being a smoker and getting charged more for the insurance according to this data.
+
+
+```{r fig.dim = c(8, 5)}
+ggplot(data.df, aes(x=charges, y=smoker, color=smoker)) + 
+  geom_point(size=2) +
+  ggtitle("Smoker vs charges") +
+  theme_ipsum()
+```
+
+According to the above plot, smoking increase the charges one should pay for insurance. Overall, no non-smoker pays more than 38000, but there are many smokers that pay between this 38000 and 64000.
+
+Second, to find if there is a disparity amoung male and female costumers I plotted a scatter plot.
+
+```{r fig.dim = c(8, 5)}
+ggplot(data.df, aes(x=charges, y=Gender, color="smoker")) + 
+  geom_point(size=2) +
+  ggtitle("Gender vs charges") +
+  theme_ipsum()
+```
+ 
+ As can be seen in the above plot, there is no significant difference between male and female costumers.
+ 
+ End of part 2.
+ 
+ 
+## Assignment 1 Part 3:
+ 
+ **Q1:**
+ There are two ways to approach error detection. Firstly, quantitative techniques which largely used for outlier detection, employ statistical methods to identify abnormal behaviors and errors. An example of this approach can be this: a salary that is three standard deviation away from the mean salary is an error. Secondly, qualitative techniques which use constraints, rules and patterns to detect errors. For example, two employees with the same job and the same level cannot have different salaries only because they are working in different cities. In qualitative error detection we need to address three main questions: 1- What to detect? 2- How to detect? 3- Where to detect? For the first question, the majority of work uses integrity constraints (ICs) to capture data quality rules that database should conform to. IC discovery techniques can be divided into manual designing and automatic discovery. Regarding the second question, this part is classified by whether how humans are involved. Most techniques are fully automatic like detecting violations of functional dependencies (2). Regarding the third question, most error detection techniques detect errors in the original database but errors can happen at all stages.
+
+There are three main questions that every error repairing technique needs to address: 1- What to repair? 2- How to repair? 3- Where to repair? Regarding the first question, these algorithms use three different assumptions about the data and the quality rules: 1- trusting the declared IC, thus, only data can be updated to remove errors (3), 2- Completely trusting the data and allowing the relaxation of constraints (4), 3- Exploring the possibility of changing both the data and the constraints (1). Addressing the second question, some algorithms are fully automatic and some need humans to verify the fixes or suggest fixes or even to train ML models to do the job automatically (5). Finally, to address the third question, most techniques repair the database in-situ and by doing that they destruct the database.
+
+ 
+ **Q2:**
+ 
+ In today's rapidly advancing world, machine learning has become a crucial tool for numerous applications, ranging from self-driving cars to personalized recommendations. To ensure the effectiveness and accuracy of machine learning models, data cleaning plays a vital role. Data pre-processing, including data cleaning, is a critical step in machine learning (7). Data pre-processing involves preparing, cleaning, and organizing raw data into a suitable format that can be easily handled by machine learning algorithms. Almost all real-world datasets are noisy, incomplete, and inconsistent, which can pose significant challenges for machine learning algorithms. Dirty data, which refers to data that contains errors, inaccuracies, or inconsistencies, can have severe implications on machine learning models. Dirty data can lead to inaccurate and unreliable results, as machine learning algorithms rely heavily on the quality of the input data.
+
+
+Big datasets can be greatly beneficial regarding the training of more sophisticated machine learning models. However, systematic data errors can make the model training unreliable. For example, corruption that affect particular records disproportionately can cause the aforementioned problem. Machine learning problems are greatly sensitive to dirty data. Using robust techniques cannot fix this problem. Also, the high-dimensionality of these models lead to counter-intuitive effects when trained after some types of data cleaning procedures (8). An approach called ActiveClean uses methods for selecting the best data and for gradually updating machine learning models with new, clean data (8). Overall, clean data is vital for ML models to work accurately and there are many different methods for it which we mentioned a some of them here.
+
+End of part 3
+
+##References##
+
+1.	 G. Beskales, I. F. Ilyas, L. Golab, and A. Galiullin. On the relative trust between inconsistent data and inaccurate constraints. In ICDE, pages 541–552, 2013. 
+2.	P. Bohannon, W. Fan, M. Flaster, and R. Rastogi. A cost-based model and effective heuristic for repairing constraints by value modification. In SIGMOD, pages 143–154. ACM, 2005. 
+3.	 X. Chu, I. F. Ilyas, and P. Papotti. Holistic data cleaning: Putting violations into context. In ICDE, pages 458–469, 2013. 
+4.	L. Golab, H. Karloff, F. Korn, D. Srivastava, and B. Yu. On generating near-optimal tableaux for conditional functional dependencies. PVLDB, 1(1):376–390, 2008. 
+5.	M. Yakout, A. K. Elmagarmid, J. Neville, M. Ouzzani, and I. F. Ilyas. Guided data repair. PVLDB, 4(5):279–289, 2011. 
+6.	Chu, X., Ilyas, I. F., Krishnan, S., & Wang, J. (2016, June). Data cleaning: Overview and emerging challenges. In Proceedings of the 2016 International Conference on Management of Data.
+7.	R. Yasmin, R. Amin, & M. Reza, "Effects of hybrid non-linear feature extraction method on different data sampling techniques for liver disease prediction", Journal of Future Sustainability, vol. 2, no. 2, p. 57-64, 2022. https://doi.org/10.5267/j.jfs.2022.9.005
+8.	S. Krishnan, J. Wang, E. Wu, M. J. Franklin, and K. Goldberg. Activeclean: Interactive data cleaning while learning convex loss models. In Arxiv: http:// arxiv.org/ pdf/ 1601.03797.pdf , 2015. 
+9.  J. Han, J. Pei, and H. Tong, Data Mining: Concepts and Techniques. Morgan Kaufmann, 2022.
+
